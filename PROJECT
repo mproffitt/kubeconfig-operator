@@ -7,4 +7,13 @@ layout:
 - go.kubebuilder.io/v4
 projectName: kubeconfig-operator
 repo: github.com/mproffitt/kubeconfig-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: kubeconfig.choclab.net
+  kind: Cluster
+  path: github.com/mproffitt/kubeconfig-operator/api/v1alpha1
+  version: v1alpha1
 version: "3"

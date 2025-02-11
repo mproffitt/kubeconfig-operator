@@ -30,6 +30,12 @@ spec:
         control-plane: controller-manager
         app.kubernetes.io/name: kubeconfig-operator
     spec:
+      nodeSelector:
+        kubeconfig.choclab.net/operator: allow
+      tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
       # TODO(user): Uncomment the following code to configure the nodeAffinity expression
       # according to the platforms which are supported by your solution.
       # It is considered best practice to support multiple architectures. You can
@@ -64,6 +70,7 @@ spec:
           - --leader-elect
           - --health-probe-bind-address=:8081
         image: controller:latest
+        imagePullPolicy: Always
         name: manager
         ports: []
         securityContext:
@@ -92,7 +99,13 @@ spec:
           requests:
             cpu: 10m
             memory: 64Mi
-        volumeMounts: []
-      volumes: []
+        volumeMounts:
+        - name: kubeconfig
+          mountPath: /tmp/kubeconfig
+      volumes:
+      - name: kubeconfig
+        hostPath:
+          path: /tmp/kubeconfig
+          type: File
       serviceAccountName: controller-manager
       terminationGracePeriodSeconds: 10
